@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Çark</title>
+<style>
+  :root {
+    --bg: #14121f; --bg2: #1f1b30; --frame-hi: #e6c98a; --frame: #c9a45c; --frame-dark: #7d6230;
+    --glass: #0d0b16; --text: #f6efe0; --muted: #8f88a6; --accent: #ff5a4f;
+    --row: 68px;
+  }
+  [data-theme="zumrut"] { --bg: #0c1f1a; --bg2: #17392f; --frame-hi: #f0dca0; --frame: #d4b36a; --frame-dark: #806428;
+    --glass: #06120f; --text: #f6efe0; --muted: #86a398; --accent: #ff6b5e; }
+  [data-theme="gece"] { --bg: #0a1224; --bg2: #172b52; --frame-hi: #eef3fb; --frame: #b4c0d4; --frame-dark: #56647f;
+    --glass: #050b17; --text: #eef3fb; --muted: #8493b0; --accent: #4fc3ff; }
+  [data-theme="mocha"] { --bg: #261c18; --bg2: #4b382f; --frame-hi: #ecd6bd; --frame: #c8a585; --frame-dark: #775842;
+    --glass: #170f0c; --text: #f7ede2; --muted: #a8948a; --accent: #ff5a4f; }
+  [data-theme="bordo"] { --bg: #210b13; --bg2: #4a162c; --frame-hi: #f3dfa6; --frame: #d6b56c; --frame-dark: #7f6226;
+    --glass: #13060a; --text: #f8ece6; --muted: #b08a96; --accent: #ffb84f; }
+  [data-theme="krem"] { --bg: #e9dfcc; --bg2: #fbf6ea; --frame-hi: #e3c48d; --frame: #b98d4e; --frame-dark: #7a5a2b;
+    --glass: #fffaf0; --text: #2a2118; --muted: #8a7b66; --accent: #e2483d; }
+  [data-theme="krem"] .window { box-shadow: inset 0 0 24px rgba(90,60,20,.25), inset 0 0 0 1px rgba(0,0,0,.08); }
+  [data-theme="krem"] .panel { background: #f6efe0; color: var(--text); }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: radial-gradient(ellipse at 50% 35%, var(--bg2), var(--bg) 70%);
+    color: var(--text);
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 28px; padding: 16px; overflow: hidden;
+    user-select: none; -webkit-user-select: none;
+  }
+  h1 {
+    font-size: clamp(26px, 4.2vw, 46px); margin: 0; font-weight: 700; text-align: center;
+    outline: none; cursor: text; user-select: text; -webkit-user-select: text;
+    text-wrap: balance; max-width: 900px;
+  }
+  .machine { display: flex; align-items: center; gap: 0; }
+  .frame {
+    padding: 14px; border-radius: 18px;
+    background: linear-gradient(145deg, var(--frame-hi), var(--frame) 40%, var(--frame-dark));
+    box-shadow: 0 30px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.5);
+    position: relative;
+  }
+  .frame::before, .frame::after {
+    content: ""; position: absolute; width: 7px; height: 7px; border-radius: 50%;
+    background: #5c4620; box-shadow: inset 0 1px 1px rgba(255,255,255,.4); top: 5px;
+  }
+  .frame::before { left: 6px; } .frame::after { right: 6px; }
+  .window {
+    width: min(520px, 72vw); height: calc(var(--row) * 5);
+    background: var(--glass); border-radius: 8px; position: relative; overflow: hidden;
+    box-shadow: inset 0 0 40px rgba(0,0,0,.9), inset 0 0 0 1px rgba(255,255,255,.06);
+  }
+  .window::after { /* üst-alt karartma */
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to bottom, var(--glass) 0%, transparent 32%, transparent 68%, var(--glass) 100%);
+  }
+  .line {
+    position: absolute; left: 0; right: 0; height: var(--row); top: calc(var(--row) * 2);
+    border-top: 1px solid rgba(201,164,92,.7); border-bottom: 1px solid rgba(201,164,92,.7);
+    pointer-events: none; z-index: 2;
+  }
+  .line::before, .line::after {
+    content: ""; position: absolute; top: 50%; margin-top: -7px;
+    border: 7px solid transparent;
+  }
+  .line::before { left: 4px; border-left-color: var(--accent); }
+  .line::after { right: 4px; border-right-color: var(--accent); }
+  .item {
+    position: absolute; left: 0; right: 0; top: 0; height: var(--row);
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(22px, 3.4vw, 34px); font-weight: 700; white-space: nowrap;
+    will-change: transform, opacity, filter;
+  }
+  /* kol */
+  .lever { width: 70px; height: 260px; position: relative; cursor: pointer; margin-left: -2px; }
+  .lever .base {
+    position: absolute; left: 0; top: 50%; width: 26px; height: 54px; margin-top: -27px;
+    background: linear-gradient(145deg, var(--frame-hi), var(--frame-dark)); border-radius: 0 10px 10px 0;
+    box-shadow: 0 6px 14px rgba(0,0,0,.5);
+  }
+  .lever .arm {
+    position: absolute; left: 26px; top: 50%; width: 8px; height: 110px; margin-left: 6px;
+    transform-origin: 50% 0; transform: rotate(180deg);
+    background: linear-gradient(90deg, #ddd, #888); border-radius: 4px;
+    transition: transform .35s cubic-bezier(.3,1.6,.5,1);
+  }
+  .lever .knob {
+    position: absolute; left: 50%; bottom: -14px; width: 34px; height: 34px; margin-left: -17px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ff9c94, var(--accent) 55%, #9c1f17);
+    box-shadow: 0 4px 10px rgba(0,0,0,.5);
+  }
+  .lever.pulled .arm { transform: rotate(0deg); transition: transform .18s ease-in; }
+  .lever:hover .knob { filter: brightness(1.15); }
+
+  .result { min-height: 34px; font-size: clamp(16px, 2vw, 22px); color: var(--muted); text-align: center; }
+  .result b { color: var(--text); }
+  .result a { color: var(--frame); }
+  .hint { position: fixed; bottom: 14px; left: 0; right: 0; text-align: center; color: var(--muted);
+    font: 13px/1.4 -apple-system, system-ui, sans-serif; opacity: .7; }
+  kbd { border: 1px solid var(--muted); border-radius: 4px; padding: 0 5px; font: inherit; }
+
+  /* ayarlar */
+  .gear { position: fixed; top: 14px; right: 14px; background: none; border: 0; color: var(--muted);
+    font-size: 22px; cursor: pointer; opacity: .5; }
+  .gear:hover { opacity: 1; }
+  .panel {
+    position: fixed; top: 0; right: 0; bottom: 0; width: min(340px, 92vw); background: #1a1728;
+    border-left: 1px solid rgba(255,255,255,.08); padding: 20px; z-index: 10;
+    transform: translateX(100%); transition: transform .25s; display: flex; flex-direction: column; gap: 12px;
+    font: 14px/1.4 -apple-system, system-ui, sans-serif;
+  }
+  .panel.open { transform: none; }
+  .panel h2 { margin: 0; font-size: 16px; }
+  .panel textarea {
+    flex: 1; background: var(--glass); color: var(--text); border: 1px solid rgba(255,255,255,.12);
+    border-radius: 8px; padding: 10px; font: inherit; resize: none; user-select: text; -webkit-user-select: text;
+  }
+  .panel label { display: flex; gap: 8px; align-items: center; color: var(--muted); }
+  .panel button {
+    background: var(--frame); color: #1a1408; border: 0; border-radius: 8px; padding: 10px; font: inherit;
+    font-weight: 600; cursor: pointer;
+  }
+  .panel button.ghost { background: none; color: var(--muted); border: 1px solid rgba(255,255,255,.15); }
+  body.clean .gear, body.clean .hint, body.clean .result { display: none; }
+  canvas#fx { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+</style>
+</head>
+<body>
+  <h1 id="title" contenteditable="true" spellcheck="false">Bugün hangi Türk projesine katkı yapıyorum?</h1>
+
+  <div class="machine">
+    <div class="frame">
+      <div class="window" id="window"><div class="line"></div></div>
+    </div>
+    <div class="lever" id="lever" title="Çevir">
+      <div class="base"></div>
+      <div class="arm"><div class="knob"></div></div>
+    </div>
+  </div>
+
+  <div class="result" id="result">&nbsp;</div>
+
+  <div class="hint"><kbd>Boşluk</kbd> veya kola tıkla: çevir · <kbd>T</kbd>: renk değiştir · <kbd>H</kbd>: çekim modu (yazıları gizle) · başlığa tıklayıp değiştirebilirsin</div>
+  <button class="gear" id="gear" aria-label="Ayarlar">⚙</button>
+
+  <aside class="panel" id="panel">
+    <h2>Liste (her satıra bir tane)</h2>
+    <textarea id="list" spellcheck="false"></textarea>
+    <label><input type="checkbox" id="removeWinner"> Çıkanı listeden çıkar (seri çekimi için)</label>
+    <label><input type="checkbox" id="sound" checked> Ses</label>
+    <button id="save">Kaydet</button>
+    <button class="ghost" id="reset">Varsayılana dön</button>
+  </aside>
+  <canvas id="fx"></canvas>
+
+<script>
+(() => {
+  // "sahip/depo" biçimindeki maddeler çarkta depo adıyla görünür ve sonuçta GitHub linki çıkar.
+  const DEFAULTS = ["orhun/git-cliff","orhun/kmon","fatih/vim-go","fatih/color","ahmetb/kubectx",
+    "gokcehan/lf","f/prompts.chat","aykutkardas/regexlearn.com","obss/sahi","ahmetaa/zemberek-nlp",
+    "Trendyol/baklava","Trendyol/go-dcp","cenkalti/backoff","ardatan/graphql-tools","yusufcanb/tlm",
+    "hazelcast/hazelcast","eser/laroux","brolin59/trnlp","abdullahselek/HerePy"];
+  const REPO = /^[\w.-]+\/[\w.-]+$/;
+  const label = s => REPO.test(s) ? s.split("/")[1] : s;
+  const DEFAULT_TITLE = "Bugün hangi Türk projesine katkı yapıyorum?";
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+  };
+
+  let items = store.get("tr.items", DEFAULTS);
+  if (!Array.isArray(items) || !items.length) items = DEFAULTS.slice();
+  const $ = id => document.getElementById(id);
+  const win = $("window"), lever = $("lever"), result = $("result"), title = $("title");
+  title.textContent = store.get("tr.title", DEFAULT_TITLE);
+  $("removeWinner").checked = store.get("tr.remove", false);
+  $("sound").checked = store.get("tr.sound", true);
+
+  // --- tema ---
+  const THEMES = ["klasik", "zumrut", "gece", "mocha", "bordo", "krem"];
+  let theme = "klasik";
+  function setTheme(t, save = true) {
+    theme = THEMES.includes(t) ? t : "klasik";
+    document.documentElement.dataset.theme = theme; if (save) store.set("tr.tema", theme);
+  }
+  setTheme(store.get("tr.tema", "klasik"), false);
+
+  // --- makara ---
+  const ROWS = 7, HALF = 3;
+  const els = [];
+  for (let i = 0; i < ROWS; i++) {
+    const d = document.createElement("div"); d.className = "item"; win.appendChild(d); els.push(d);
+  }
+  const mod = (n, m) => ((n % m) + m) % m;
+  let pos = Math.floor(Math.random() * items.length); // ortadaki öğenin (kesirli) indeksi
+  let spinning = false;
+
+  function render(speed = 0) {
+    const rowH = els[0].offsetHeight || 68;
+    const base = Math.round(pos), frac = pos - base;
+    const blur = Math.min(6, Math.abs(speed) * 0.25);
+    for (let i = 0; i < ROWS; i++) {
+      const r = i - HALF;                 // -3..3
+      const dist = r - frac;              // merkezden uzaklık (satır)
+      const el = els[i];
+      el.textContent = label(items[mod(base + r, items.length)]);
+      const a = Math.abs(dist);
+      el.style.transform = `translateY(${(dist + 2) * rowH}px) scale(${1 - Math.min(a, 3) * 0.08})`;
+      el.style.opacity = String(Math.max(0, 1 - a * 0.28));
+      el.style.filter = blur > 0.3 ? `blur(${blur.toFixed(1)}px)` : "none";
+    }
+  }
+
+  // --- ses ---
+  let ac;
+  function tick(freq = 900, dur = 0.03, vol = 0.08) {
+    if (!$("sound").checked) return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = "triangle"; o.frequency.value = freq;
+      g.gain.setValueAtTime(vol, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + dur);
+      o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime + dur);
+    } catch {}
+  }
+
+  // --- çevirme ---
+  function spin() {
+    if (spinning || items.length < 2) return;
+    spinning = true;
+    result.innerHTML = "&nbsp;";
+    lever.classList.add("pulled");
+    setTimeout(() => lever.classList.remove("pulled"), 220);
+
+    const start = Math.round(pos);
+    const winner = Math.floor(Math.random() * items.length);
+    const minTravel = Math.max(40, items.length * 3);
+    let target = start + minTravel;
+    target += mod(winner - target, items.length);
+    const dist = target - start;
+    const duration = 4200 + Math.random() * 800;
+    const ease = t => 1 - Math.pow(1 - t, 4);
+    const t0 = performance.now();
+    let last = start, lastPos = start;
+
+    function frame(now) {
+      const t = Math.min(1, (now - t0) / duration);
+      pos = start + dist * ease(t);
+      const cur = Math.round(pos);
+      if (cur !== last) { last = cur; tick(700 + Math.random() * 300); }
+      render(pos - lastPos); lastPos = pos;
+      if (t < 1) return requestAnimationFrame(frame);
+      pos = target; render(0); done(mod(target, items.length));
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function done(idx) {
+    const name = items[idx];
+    result.textContent = "";
+    result.append("Bugünkü proje: ");
+    const b = document.createElement("b"); b.textContent = name; result.append(b);
+        if (REPO.test(name)) {
+      const a = document.createElement("a");
+      a.href = "https://github.com/" + name + "/issues?q=" + encodeURIComponent('is:issue is:open label:"good first issue"');
+      a.target = "_blank"; a.rel = "noopener"; a.textContent = "good first issue'ları aç ↗";
+      result.append(" · ", a);
+    }
+    [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => tick(f, 0.18, 0.1), i * 90));
+    fireworks();
+    if ($("removeWinner").checked && items.length > 2) {
+      setTimeout(() => {
+        items.splice(idx, 1); store.set("tr.items", items);
+        pos = mod(idx, items.length); spinning = false; // makara bir sonraki çevirişe kadar aynı görünsün diye render etmiyoruz
+      }, 50);
+    } else spinning = false;
+  }
+
+  // --- havai fişek ---
+  const fx = $("fx"), ctx = fx.getContext("2d");
+  let sparks = [], fxRunning = false;
+  function burst(x, y) {
+    const hue = Math.random() * 360, n = 80;
+    for (let i = 0; i < n; i++) {
+      const ang = (i / n) * Math.PI * 2 + Math.random() * 0.2, sp = 2 + Math.random() * 7;
+      sparks.push({ x, y, px: x, py: y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp,
+        life: 1, decay: 0.012 + Math.random() * 0.012, hue: hue + (Math.random() - 0.5) * 40 });
+    }
+    tick(90 + Math.random() * 60, 0.3, 0.18);                       // patlama
+    for (let i = 0; i < 5; i++) setTimeout(() => tick(1500 + Math.random() * 2500, 0.03, 0.03), 120 + i * 70); // çıtırtı
+  }
+  function fireworks() {
+    fx.width = innerWidth; fx.height = innerHeight;
+    const r = win.getBoundingClientRect();
+    burst(r.left + r.width / 2, r.top + r.height / 2);
+    for (let i = 1; i < 8; i++) setTimeout(() =>
+      burst(innerWidth * (0.12 + Math.random() * 0.76), innerHeight * (0.12 + Math.random() * 0.5)), i * 260);
+    if (fxRunning) return;
+    fxRunning = true;
+    const t0 = performance.now();
+    (function step(now) {
+      ctx.clearRect(0, 0, fx.width, fx.height);
+      ctx.lineCap = "round";
+      sparks = sparks.filter(p => p.life > 0);
+      for (const p of sparks) {
+        p.px = p.x; p.py = p.y;
+        p.vx *= 0.965; p.vy = p.vy * 0.965 + 0.07;
+        p.x += p.vx; p.y += p.vy; p.life -= p.decay;
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.strokeStyle = `hsl(${p.hue}, 100%, ${55 + p.life * 25}%)`;
+        ctx.lineWidth = 1 + p.life * 2;
+        ctx.beginPath(); ctx.moveTo(p.px - p.vx * 2, p.py - p.vy * 2); ctx.lineTo(p.x, p.y); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+      if (sparks.length || now - t0 < 2400) requestAnimationFrame(step);
+      else { fxRunning = false; ctx.clearRect(0, 0, fx.width, fx.height); }
+    })(t0);
+  }
+
+  // --- olaylar ---
+  lever.addEventListener("click", spin);
+  document.addEventListener("keydown", e => {
+    const typing = e.target === title || e.target.tagName === "TEXTAREA";
+    if (typing) { if (e.key === "Enter" && e.target === title) { e.preventDefault(); title.blur(); } return; }
+    if (e.code === "Space") { e.preventDefault(); spin(); }
+    if (e.key.toLowerCase() === "h") document.body.classList.toggle("clean");
+    if (e.key.toLowerCase() === "t") setTheme(THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length]);
+  });
+  title.addEventListener("blur", () => {
+    if (!title.textContent.trim()) title.textContent = DEFAULT_TITLE;
+    store.set("tr.title", title.textContent);
+  });
+
+  const panel = $("panel"), list = $("list");
+  $("gear").addEventListener("click", () => {
+    list.value = items.join("\n"); panel.classList.toggle("open");
+  });
+  $("save").addEventListener("click", () => {
+    const next = list.value.split("\n").map(s => s.trim()).filter(Boolean);
+    if (next.length < 2) { alert("En az 2 madde gerekli."); return; }
+    items = next; store.set("tr.items", items);
+    pos = 0; render(); panel.classList.remove("open");
+  });
+  $("reset").addEventListener("click", () => { list.value = DEFAULTS.join("\n"); });
+  $("removeWinner").addEventListener("change", e => store.set("tr.remove", e.target.checked));
+  $("sound").addEventListener("change", e => store.set("tr.sound", e.target.checked));
+  addEventListener("resize", () => render());
+
+  render();
+  window.__cark = { spin, setTheme, get state() { return { spinning, pos, items }; } };
+})();
+</script>
+</body>
+</html>
