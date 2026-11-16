@@ -128,6 +128,9 @@
     border-radius: 8px; padding: 10px; font: inherit; resize: none; user-select: text; -webkit-user-select: text;
   }
   .panel label { display: flex; gap: 8px; align-items: center; color: var(--muted); }
+  .panel label.col { flex-direction: column; align-items: stretch; }
+  .panel input[type="text"] { background: var(--glass); color: var(--text); border: 1px solid rgba(255,255,255,.12);
+    border-radius: 8px; padding: 9px 10px; font: inherit; user-select: text; -webkit-user-select: text; }
   .panel button {
     background: var(--frame); color: #1a1408; border: 0; border-radius: 8px; padding: 10px; font: inherit;
     font-weight: 600; cursor: pointer;
@@ -164,6 +167,8 @@
   <aside class="panel" id="panel">
     <h2>Liste (her satıra bir tane)</h2>
     <textarea id="list" spellcheck="false"></textarea>
+    <label class="col">Hep şunda dursun (boş bırakırsan rastgele):
+      <input type="text" id="forced" placeholder="örn. Browser game" spellcheck="false" autocapitalize="off"></label>
     <label><input type="checkbox" id="removeWinner"> Çıkanı listeden çıkar (seri çekimi için)</label>
     <label><input type="checkbox" id="sound" checked> Ses</label>
     <button id="save">Kaydet</button>
@@ -261,8 +266,8 @@
 
     const start = Math.round(pos);
     let winner = Math.floor(Math.random() * items.length);
-    // Çekim için: adrese ?pick=Browser%20game eklenirse çark o maddede durur.
-    const pick = (new URLSearchParams(location.search).get("pick") || "").trim().toLowerCase();
+    // Çekim için: ⚙ panelindeki "Hep şunda dursun" ayarı (ya da adresteki ?pick=) çarkı o maddede durdurur.
+    const pick = String(store.get("v4.forced", "") || "").trim().toLowerCase();
     if (pick) {
       const forced = items.findIndex(it => it.toLowerCase() === pick || label(it).toLowerCase() === pick);
       if (forced >= 0) winner = forced;
@@ -364,14 +369,19 @@
     store.set(key("title3"), title.textContent);
   });
 
+  const urlPick = new URLSearchParams(location.search).get("pick");
+  if (urlPick !== null) store.set("v4.forced", /^(off|random|)$/i.test(urlPick.trim()) ? "" : urlPick.trim());
+
   const panel = $("panel"), list = $("list");
   $("gear").addEventListener("click", () => {
-    list.value = items.join("\n"); panel.classList.toggle("open");
+    list.value = items.join("\n"); $("forced").value = store.get("v4.forced", "");
+    panel.classList.toggle("open");
   });
   $("save").addEventListener("click", () => {
     const next = list.value.split("\n").map(s => s.trim()).filter(Boolean);
     if (next.length < 2) { alert("En az 2 madde gerekli."); return; }
     items = next; store.set(key("items3"), items);
+    store.set("v4.forced", $("forced").value.trim());
     pos = 0; render(); panel.classList.remove("open");
   });
   $("reset").addEventListener("click", () => { list.value = MODES[mode].items.join("\n"); });
