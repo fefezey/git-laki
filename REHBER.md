@@ -1,73 +1,64 @@
-# Çark Rehberi
+# Git Laki Rehberi
 
 Çekim sırasında elinin altında dursun diye: ne yapacağın ve çarktaki her maddenin anlamı.
 
+Çark: https://fefezey.github.io/git-laki/
+
 ## Her video aynı 5 adım
 
-1. **Çevir.** `cark.html` dosyasını aç, Boşluk'a bas. Bu anı kaydet.
+1. **Çevir.** Çarka ya da kırmızı kola dokun. Bu anı kaydet.
 2. **Çıkanı oku.** Aşağıdaki tablolardan ne olduğuna bak.
-3. **İşi yap.** Çıkan şeyin türüne göre (aşağıda "Çıkan şeye göre ne yaparsın").
+3. **İşi yap.** Ekran kaydı açıkken.
 4. **GitHub'a koy.** Yaptığın şey GitHub hesabında görünür hale gelsin.
 5. **Videoyu bitir.** Sonucu göster, "yarın çark ne seçecek?" diye kapat.
 
-## Çıkan şeye göre ne yaparsın
+## Çarktaki maddeler (14)
 
-| Ne çıktı | Nasıl anlarsın | Ne yaparsın | Ne kadar sürer |
+### Kendi yapacağın şeyler
+
+Küçük bir örneğini yapıp GitHub'da yeni bir depoya koyarsın. 30 dakika – 2 saat.
+
+| Çarkta | Ne yaparsın | Küçük örnek fikir | Videonun finali |
 |---|---|---|---|
-| Başkasının projesi | Altta "yeni başlayanlara uygun işleri aç" linki çıkar | Linke tıkla, küçük bir iş seç, düzelt, gönder | 1–3 saat, kabulü günler sürebilir |
-| Kendi yapacağın proje | Link çıkmaz, bir proje türü yazar | Küçük bir örneğini yap, GitHub'da yeni depoya koy | 30 dakika – 2 saat |
-| Profil işi | Link çıkmaz, bir görev cümlesi yazar | GitHub hesabında o düzenlemeyi yap | 15–30 dakika |
+| Browser game | Tarayıcıda oynanan küçük oyun | Yılan oyunu, hafıza kartları | Oyunu oynarsın |
+| Discord bot | Komutlara yanıt veren bot | `/laki` yazınca çarkı çeviren bot | Yazarsın, bot yanıt verir |
+| Chrome extension | Bir sitedeki sinir bozucu şeyi düzelten eklenti | YouTube Shorts gizleyici | Öncesi ve sonrası |
+| AI tool | Yapay zekâ kullanan küçük araç | Commit mesajı yazan araç | Aracı canlı kullanırsın |
+| VS Code extension | Editöre yeni bir özellik | Seçili metni tek tuşla büyük harfe çeviren eklenti | Tek tuşla çalışır |
+| Terminal app | Terminalde çalışan küçük program | Dosyaları türüne göre klasörleyen araç | Komutu yazarsın, iş görür |
+| Telegram bot | Telegram'da yanıt veren bot | Günün kelimesini gönderen bot | Telefonda mesajlaşırsın |
+| Mobile app | Telefonda açılan basit uygulama | Su içme sayacı | Telefonda gösterirsin |
+| Build my own Git | Git'in mini sürümü | Sadece kaydetme ve geçmiş gösterme | Kendi Git'inle kayıt alırsın |
 
-Başkasının projesinde uygun iş bulamazsan tekrar çevir; videoda bunu söylemen sorun değil.
+### Katkı
 
-## Çarktaki maddeler
+Başkasının projesinde küçük bir iş bulup düzeltme gönderirsin. Çıkınca altta o projenin
+yeni başlayanlara uygun işlerinin linki görünür. 1–3 saat; kabulü günler sürebilir.
+Uygun iş bulamazsan tekrar çevir.
 
-### Başkasının projeleri (katkı)
-
-| Çarkta | Nedir | Videoda tek cümle |
+| Çarkta | Proje nedir | Videoda tek cümle |
 |---|---|---|
-| vscode | Microsoft'un kod editörü | "Milyonlarca yazılımcının kod yazdığı program." |
-| excalidraw | El çizimi görünümlü şema çizme aracı | "Beyaz tahtaya çizer gibi şema çizdiğin site." |
-| next.js | Web sitesi yapma altyapısı | "Netflix ve TikTok gibi sitelerin kullandığı altyapı." |
-| tldr | Terminal komutlarının kısa açıklamaları | "Komutların kopya kâğıdı." |
-| cpython | Python dilinin kendisi | "Python'ı çalıştıran program; ona da katkı yapılabiliyor." |
-| grafana | Verileri grafiklerle izleme aracı | "Şirketlerin sistemlerini izlediği gösterge paneli." |
-| content (MDN) | Web teknolojilerinin başvuru belgeleri | "Web geliştiricilerin ansiklopedisi." |
-| rust | Rust programlama dili | "Hızlı ve güvenli olmasıyla ünlü programlama dili." |
-| freeCodeCamp | Ücretsiz kodlama öğrenme sitesi | "Milyonlarca kişinin bedava kod öğrendiği site." |
-| node | JavaScript'i tarayıcı dışında çalıştıran araç | "JavaScript'in sunucuda çalışmasını sağlayan şey." |
-| ruff | Python kodunu denetleyen hızlı araç | "Python kodunu saniyeler içinde denetleyen araç." |
+| Fix a bug in VS Code | Microsoft'un kod editörü | "Milyonlarca yazılımcının kod yazdığı program." |
+| Fix a bug in Excalidraw | El çizimi görünümlü şema çizme sitesi | "Beyaz tahtaya çizer gibi şema çizdiğin site." |
+| Improve freeCodeCamp | Ücretsiz kodlama öğrenme sitesi | "Milyonlarca kişinin bedava kod öğrendiği site." |
 
-Kolay olanlar: tldr, MDN, freeCodeCamp. Zor olanlar: cpython, rust, node, next.js.
+### Profil
 
-### Kendi yapacağın projeler
+GitHub hesabını düzenlersin. 15–30 dakika, en çabuk biten işler.
 
-| Çarkta | Nedir | Küçük örnek fikir |
+| Çarkta | Ne yaparsın | Videonun finali |
 |---|---|---|
-| CLI tool (Komut satırı aracı) | Terminalde yazarak kullanılan program | Dosyaları türüne göre klasörleyen araç |
-| VS Code extension (VS Code eklentisi) | Editöre yeni özellik ekleyen parça | Seçili metni tek tuşla büyük harfe çeviren eklenti |
-| Browser game (Tarayıcı oyunu) | Sitede açılıp oynanan oyun | Yılan oyunu, hafıza kartları |
-| npm package (npm paketi) | Başkalarının projelerine eklediği hazır kod | Türkçe karakterleri düzgün sıralayan fonksiyon |
-| Discord bot (Discord botu) | Discord'da komutlara yanıt veren program | Zar atan ya da anket açan bot |
-| GitHub Action | Kod gönderilince kendiliğinden çalışan otomasyon | Her PR'a "teşekkürler" yazan otomasyon |
-| Browser extension (Tarayıcı eklentisi) | Chrome'a eklenen küçük program | YouTube Shorts gizleyici |
-| Build your own Git (Kendi Git'ini yaz) | Git'in basit bir kopyası | Sadece kaydetme ve geçmiş gösterme |
-| AI tool (Yapay zekâ aracı) | Yapay zekâ kullanan küçük uygulama | Commit mesajı yazan araç |
-
-### Profil işleri
-
-| Çarkta | Nedir | Ne yaparsın |
-|---|---|---|
-| Write a profile README (Profil README'si yaz) | Profilinin en üstündeki tanıtım yazısı | Kullanıcı adınla aynı adda depo açıp tanıtım yazısı koy |
-| Ship a live demo (Canlı demo yayınla) | Projenin tıklanıp denenebilen hali | Bir projeni GitHub Pages ile yayınla |
-| Add tests + CI badge (Test + CI rozeti ekle) | Kodun çalıştığını gösteren yeşil işaret | Otomatik test ekle, rozeti README'ye koy |
-| Add README screenshots (README'ye ekran görüntüsü) | Projenin nasıl göründüğünü gösteren resim | Görüntü al, README'nin başına ekle |
+| Redesign my GitHub profile | Profil sayfanın üstündeki tanıtım yazısını baştan yazarsın | Öncesi ve sonrası |
+| Put a project online | Bir projeni GitHub Pages ile herkesin açabileceği adrese koyarsın | Linki telefonda açarsın |
 
 ## Videoda anlatma kalıbı
 
-1. **Bu ne?** Tablodaki tek cümle.
-2. **Ben ne yapacağım?** "Küçük bir hata bulup düzelteceğim" ya da "küçük bir örneğini yapacağım".
+1. **Bu ne?** Tek cümleyle çıkan şeyi açıkla.
+2. **Ben ne yapacağım?** "Küçük bir örneğini yapacağım" ya da "küçük bir hata bulup düzelteceğim".
 3. **Neden önemli?** "Bu, GitHub profilimde görünecek."
+
+Terimleri çevir: "fork" yerine "kopyasını aldım", "pull request" yerine "değişiklik isteği gönderdim",
+"merge" yerine "kabul etti".
 
 ## Video akışı (45 saniye)
 

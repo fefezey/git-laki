@@ -176,14 +176,15 @@
   // "sahip/depo" biçimindeki maddeler çarkta depo adıyla görünür ve sonuçta GitHub linki çıkar.
   const MODES = {
     tek: { tab: "", sonuc: "Bugünkü iş", title: "What do I ship today?", items: [
-      "microsoft/vscode","CLI tool","excalidraw/excalidraw","Write a profile README","vercel/next.js",
-      "VS Code extension","tldr-pages/tldr","Browser game","python/cpython","Ship a live demo",
-      "grafana/grafana","npm package","mdn/content","Discord bot","rust-lang/rust","Add tests + CI badge",
-      "freeCodeCamp/freeCodeCamp","GitHub Action","nodejs/node","Browser extension","astral-sh/ruff",
-      "Build your own Git","Add README screenshots","AI tool"] }
+      "Browser game","Fix a bug in VS Code","Discord bot","Redesign my GitHub profile","Chrome extension",
+      "AI tool","Fix a bug in Excalidraw","VS Code extension","Terminal app","Put a project online",
+      "Telegram bot","Improve freeCodeCamp","Mobile app","Build my own Git"] }
   };
   const MODE_KEYS = Object.keys(MODES);
   const GFI = 'is:issue is:open label:"good first issue","help wanted","easy","E-easy"';
+  // Katkı maddeleri: çıkınca altta o projenin yeni başlayanlara uygun işlerinin linki görünür.
+  const LINKS = { "Fix a bug in VS Code": "microsoft/vscode", "Fix a bug in Excalidraw": "excalidraw/excalidraw",
+    "Improve freeCodeCamp": "freeCodeCamp/freeCodeCamp" };
   const REPO = /^[\w.-]+\/[\w.-]+$/;
   const label = s => REPO.test(s) ? s.split("/")[1] : s;
   const store = {
@@ -284,9 +285,10 @@
   function done(idx) {
     const name = items[idx];
     result.textContent = "";
-        if (REPO.test(name)) {
+        const repo = LINKS[name] || (REPO.test(name) ? name : null);
+    if (repo) {
       const a = document.createElement("a");
-      a.href = "https://github.com/" + name + "/issues?q=" + encodeURIComponent(GFI);
+      a.href = "https://github.com/" + repo + "/issues?q=" + encodeURIComponent(GFI);
       a.target = "_blank"; a.rel = "noopener"; a.textContent = "open beginner-friendly issues ↗";
       result.append(a);
     }
@@ -294,7 +296,7 @@
     fireworks();
     if ($("removeWinner").checked && items.length > 2) {
       setTimeout(() => {
-        items.splice(idx, 1); store.set(key("items2"), items);
+        items.splice(idx, 1); store.set(key("items3"), items);
         pos = mod(idx, items.length); spinning = false; // makara bir sonraki çevirişe kadar aynı görünsün diye render etmiyoruz
       }, 50);
     } else spinning = false;
@@ -363,7 +365,7 @@
   $("save").addEventListener("click", () => {
     const next = list.value.split("\n").map(s => s.trim()).filter(Boolean);
     if (next.length < 2) { alert("En az 2 madde gerekli."); return; }
-    items = next; store.set(key("items2"), items);
+    items = next; store.set(key("items3"), items);
     pos = 0; render(); panel.classList.remove("open");
   });
   $("reset").addEventListener("click", () => { list.value = MODES[mode].items.join("\n"); });
@@ -381,7 +383,7 @@
   function loadMode(m) {
     if (spinning || !MODES[m]) return;
     mode = m;
-    const saved = store.get(key("items2"), null);
+    const saved = store.get(key("items3"), null);
     items = (Array.isArray(saved) && saved.length >= 2 ? saved : MODES[m].items).slice();
     title.textContent = store.get(key("title3"), MODES[m].title);
     for (const b of tabs.children) b.classList.toggle("on", b.dataset.mode === m);
