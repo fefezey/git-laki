@@ -260,7 +260,13 @@
     setTimeout(() => lever.classList.remove("pulled"), 220);
 
     const start = Math.round(pos);
-    const winner = Math.floor(Math.random() * items.length);
+    let winner = Math.floor(Math.random() * items.length);
+    // Çekim için: adrese ?pick=Browser%20game eklenirse çark o maddede durur.
+    const pick = (new URLSearchParams(location.search).get("pick") || "").trim().toLowerCase();
+    if (pick) {
+      const forced = items.findIndex(it => it.toLowerCase() === pick || label(it).toLowerCase() === pick);
+      if (forced >= 0) winner = forced;
+    }
     const minTravel = Math.max(40, items.length * 3);
     let target = start + minTravel;
     target += mod(winner - target, items.length);
