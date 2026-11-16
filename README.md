@@ -1,4 +1,4 @@
-# Açık Kaynak Çarkı
+# Git Laki
 
 Kolu çek, çark bugün GitHub için ne yapacağını seçsin: bir açık kaynak projeye katkı, sıfırdan küçük bir proje ya da bir profil işi.
 
