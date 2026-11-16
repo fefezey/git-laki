@@ -126,12 +126,18 @@
     font-weight: 600; cursor: pointer;
   }
   .panel button.ghost { background: none; color: var(--muted); border: 1px solid rgba(255,255,255,.15); }
-  body.clean .gear, body.clean .hint, body.clean .result { display: none; }
+  body.clean .gear, body.clean .hint, body.clean .result, body.clean .tabs { display: none; }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: -10px; }
+  .tabs button { background: none; border: 1px solid color-mix(in srgb, var(--muted) 45%, transparent); color: var(--muted);
+    border-radius: 999px; padding: 6px 14px; font: 13px/1 -apple-system, system-ui, sans-serif; cursor: pointer; }
+  .tabs button:hover { color: var(--text); }
+  .tabs button.on { background: var(--frame); border-color: var(--frame); color: #17110b; font-weight: 600; }
   canvas#fx { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
 </style>
 </head>
 <body>
-  <h1 id="title" contenteditable="true" spellcheck="false">Bugün hangi Türk projesine katkı yapıyorum?</h1>
+  <h1 id="title" contenteditable="true" spellcheck="false">What am I doing for my GitHub today?</h1>
+  <nav class="tabs" id="tabs"></nav>
 
   <div class="machine">
     <div class="frame">
@@ -145,7 +151,6 @@
 
   <div class="result" id="result">&nbsp;</div>
 
-  <div class="hint"><kbd>Boşluk</kbd> veya kola tıkla: çevir · <kbd>T</kbd>: renk değiştir · <kbd>H</kbd>: çekim modu (yazıları gizle) · başlığa tıklayıp değiştirebilirsin</div>
   <button class="gear" id="gear" aria-label="Ayarlar">⚙</button>
 
   <aside class="panel" id="panel">
@@ -161,25 +166,30 @@
 <script>
 (() => {
   // "sahip/depo" biçimindeki maddeler çarkta depo adıyla görünür ve sonuçta GitHub linki çıkar.
-  const DEFAULTS = ["orhun/git-cliff","orhun/kmon","fatih/vim-go","fatih/color","ahmetb/kubectx",
-    "gokcehan/lf","f/prompts.chat","aykutkardas/regexlearn.com","obss/sahi","ahmetaa/zemberek-nlp",
-    "Trendyol/baklava","Trendyol/go-dcp","cenkalti/backoff","ardatan/graphql-tools","yusufcanb/tlm",
-    "hazelcast/hazelcast","eser/laroux","brolin59/trnlp","abdullahselek/HerePy"];
+  const MODES = {
+    tek: { tab: "", sonuc: "Bugünkü iş", title: "What am I doing for my GitHub today?", items: [
+      "microsoft/vscode","CLI tool","excalidraw/excalidraw","Write a profile README","vercel/next.js",
+      "VS Code extension","tldr-pages/tldr","Browser game","python/cpython","Ship a live demo",
+      "grafana/grafana","npm package","mdn/content","Discord bot","rust-lang/rust","Add tests + CI badge",
+      "freeCodeCamp/freeCodeCamp","GitHub Action","nodejs/node","Browser extension","astral-sh/ruff",
+      "Build your own Git","Add README screenshots","AI tool"] }
+  };
+  const MODE_KEYS = Object.keys(MODES);
+  const GFI = 'is:issue is:open label:"good first issue","help wanted","easy","E-easy"';
   const REPO = /^[\w.-]+\/[\w.-]+$/;
   const label = s => REPO.test(s) ? s.split("/")[1] : s;
-  const DEFAULT_TITLE = "Bugün hangi Türk projesine katkı yapıyorum?";
   const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
   };
 
-  let items = store.get("tr.items", DEFAULTS);
-  if (!Array.isArray(items) || !items.length) items = DEFAULTS.slice();
+  let mode = MODE_KEYS[0];
+  const key = k => "v4." + k;
+  let items = MODES[mode].items.slice();
   const $ = id => document.getElementById(id);
   const win = $("window"), lever = $("lever"), result = $("result"), title = $("title");
-  title.textContent = store.get("tr.title", DEFAULT_TITLE);
-  $("removeWinner").checked = store.get("tr.remove", false);
-  $("sound").checked = store.get("tr.sound", true);
+  $("removeWinner").checked = store.get("v3.remove", false);
+  $("sound").checked = store.get("v3.sound", true);
 
   // --- tema ---
   const THEMES = ["klasik", "zumrut", "gece", "mocha", "bordo", "krem"];
@@ -208,9 +218,11 @@
       const r = i - HALF;                 // -3..3
       const dist = r - frac;              // merkezden uzaklık (satır)
       const el = els[i];
-      el.textContent = label(items[mod(base + r, items.length)]);
+      const txt = label(items[mod(base + r, items.length)]);
+      el.textContent = txt;
+      const fit = txt.length > 20 ? 20 / txt.length : 1;
       const a = Math.abs(dist);
-      el.style.transform = `translateY(${(dist + 2) * rowH}px) scale(${1 - Math.min(a, 3) * 0.08})`;
+      el.style.transform = `translateY(${(dist + 2) * rowH}px) scale(${(1 - Math.min(a, 3) * 0.08) * fit})`;
       el.style.opacity = String(Math.max(0, 1 - a * 0.28));
       el.style.filter = blur > 0.3 ? `blur(${blur.toFixed(1)}px)` : "none";
     }
@@ -264,19 +276,17 @@
   function done(idx) {
     const name = items[idx];
     result.textContent = "";
-    result.append("Bugünkü proje: ");
-    const b = document.createElement("b"); b.textContent = name; result.append(b);
         if (REPO.test(name)) {
       const a = document.createElement("a");
-      a.href = "https://github.com/" + name + "/issues?q=" + encodeURIComponent('is:issue is:open label:"good first issue"');
-      a.target = "_blank"; a.rel = "noopener"; a.textContent = "good first issue'ları aç ↗";
-      result.append(" · ", a);
+      a.href = "https://github.com/" + name + "/issues?q=" + encodeURIComponent(GFI);
+      a.target = "_blank"; a.rel = "noopener"; a.textContent = "open beginner-friendly issues ↗";
+      result.append(a);
     }
     [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => tick(f, 0.18, 0.1), i * 90));
     fireworks();
     if ($("removeWinner").checked && items.length > 2) {
       setTimeout(() => {
-        items.splice(idx, 1); store.set("tr.items", items);
+        items.splice(idx, 1); store.set(key("items2"), items);
         pos = mod(idx, items.length); spinning = false; // makara bir sonraki çevirişe kadar aynı görünsün diye render etmiyoruz
       }, 50);
     } else spinning = false;
@@ -333,8 +343,8 @@
     if (e.key.toLowerCase() === "t") setTheme(THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length]);
   });
   title.addEventListener("blur", () => {
-    if (!title.textContent.trim()) title.textContent = DEFAULT_TITLE;
-    store.set("tr.title", title.textContent);
+    if (!title.textContent.trim()) title.textContent = MODES[mode].title;
+    store.set(key("title2"), title.textContent);
   });
 
   const panel = $("panel"), list = $("list");
@@ -344,16 +354,33 @@
   $("save").addEventListener("click", () => {
     const next = list.value.split("\n").map(s => s.trim()).filter(Boolean);
     if (next.length < 2) { alert("En az 2 madde gerekli."); return; }
-    items = next; store.set("tr.items", items);
+    items = next; store.set(key("items2"), items);
     pos = 0; render(); panel.classList.remove("open");
   });
-  $("reset").addEventListener("click", () => { list.value = DEFAULTS.join("\n"); });
-  $("removeWinner").addEventListener("change", e => store.set("tr.remove", e.target.checked));
-  $("sound").addEventListener("change", e => store.set("tr.sound", e.target.checked));
+  $("reset").addEventListener("click", () => { list.value = MODES[mode].items.join("\n"); });
+  $("removeWinner").addEventListener("change", e => store.set("v3.remove", e.target.checked));
+  $("sound").addEventListener("change", e => store.set("v3.sound", e.target.checked));
   addEventListener("resize", () => render());
 
-  render();
-  window.__cark = { spin, setTheme, get state() { return { spinning, pos, items }; } };
+  // --- kategoriler ---
+  const tabs = $("tabs");
+  if (MODE_KEYS.length > 1) MODE_KEYS.forEach((m, i) => {
+    const b = document.createElement("button");
+    b.textContent = (i + 1) + " · " + MODES[m].tab; b.dataset.mode = m;
+    b.addEventListener("click", () => loadMode(m)); tabs.appendChild(b);
+  });
+  function loadMode(m) {
+    if (spinning || !MODES[m]) return;
+    mode = m;
+    const saved = store.get(key("items2"), null);
+    items = (Array.isArray(saved) && saved.length >= 2 ? saved : MODES[m].items).slice();
+    title.textContent = store.get(key("title2"), MODES[m].title);
+    for (const b of tabs.children) b.classList.toggle("on", b.dataset.mode === m);
+    result.innerHTML = "&nbsp;"; panel.classList.remove("open");
+    pos = Math.floor(Math.random() * items.length); render();
+  }
+  loadMode(mode);
+  window.__cark = { spin, setTheme, loadMode, get mode() { return mode; }, get state() { return { spinning, pos, items }; } };
 })();
 </script>
 </body>

@@ -1,6 +1,8 @@
 # Açık Kaynak Çarkı
 
-Kolu çek, çark bir Türk açık kaynak projesi seçsin; o projeye katkı yap.
+Kolu çek, çark bugün GitHub için ne yapacağını seçsin: bir açık kaynak projeye katkı, sıfırdan küçük bir proje ya da bir profil işi.
+
+Çarktaki her maddenin ne olduğu ve çıkınca ne yapılacağı [REHBER.md](REHBER.md) dosyasında.
 
 ## Kullanım
 
