@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#3ab0ff">
-<title>Süper Ömer</title>
+<title>Ömer Halis</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
@@ -113,10 +113,25 @@
   .card .sub { margin: 0 0 14px; color: var(--ink-soft); font-weight: 500; }
 
   /* Seviye */
-  .level-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-weight: 800; }
-  .level-row small { color: var(--ink-soft); font-weight: 700; font-size: 15px; text-align: right; }
+  .belt {
+    --c: #fff; position: relative; height: 54px; margin-top: 10px; border-radius: 12px;
+    background:
+      repeating-linear-gradient(180deg, transparent 0 9px, rgba(0,0,0,.10) 9px 11px),
+      var(--c);
+    border: 3px solid rgba(23,50,77,.22); display: grid; place-items: center;
+    transition: background-color .5s;
+  }
+  .belt span {
+    background: #fff; color: var(--ink); font-weight: 800; font-size: 20px; line-height: 1;
+    padding: 7px 16px; border-radius: 99px; border: 3px solid rgba(23,50,77,.22);
+  }
+  .level-row { display: flex; justify-content: center; margin-top: 12px; }
+  .belts { display: flex; gap: 6px; margin-top: 12px; }
+  .belts i { flex: 1; height: 12px; border-radius: 99px; border: 2px solid rgba(23,50,77,.22); opacity: .3; }
+  .belts i.on { opacity: 1; }
+  .level-row small { color: var(--ink-soft); font-weight: 700; font-size: 16px; text-align: center; }
   .bar { height: 22px; background: var(--line); border-radius: 99px; overflow: hidden; margin-top: 8px; }
-  .bar i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg, var(--sun), var(--orange)); transition: width .5s cubic-bezier(.3,1.4,.5,1); }
+  .bar i { display: block; height: 100%; width: 0; border-radius: 99px; background: var(--sun); box-shadow: inset 0 0 0 2px rgba(23,50,77,.18); transition: background-color .5s, width .5s cubic-bezier(.3,1.4,.5,1); }
 
   /* Görevler */
   .missions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -214,8 +229,11 @@
   </section>
 
   <section class="card reveal">
-    <div class="level-row"><span id="levelName">🐣 Çaylak Sporcu</span><small id="levelNext"></small></div>
+    <h2>Kuşağın</h2>
+    <div class="belt" id="belt"><span id="levelName">Beyaz Kuşak</span></div>
+    <div class="level-row"><small id="levelNext"></small></div>
     <div class="bar"><i id="levelBar"></i></div>
+    <div class="belts" id="belts" aria-hidden="true"></div>
   </section>
 
   <section class="card reveal">
@@ -241,17 +259,18 @@
     { id: 'su',     emo: '💧', txt: 'Bol bol su içtim' },
     { id: 'meyve',  emo: '🍎', txt: 'Meyve yedim' },
     { id: 'sebze',  emo: '🥦', txt: 'Sebze yedim' },
-    { id: 'spor',   emo: '⚽', txt: 'Spor yaptım ya da oyun oynadım' },
+    { id: 'spor',   emo: '🥋', txt: 'Karate ya da spor yaptım' },
     { id: 'disari', emo: '🌳', txt: 'Dışarıda vakit geçirdim' },
     { id: 'uyku',   emo: '😴', txt: 'Erken yattım' }
   ];
   var LEVELS = [
-    { at: 0,   name: '🐣 Çaylak Sporcu' },
-    { at: 10,  name: '🏃 Hızlı Koşucu' },
-    { at: 25,  name: '💪 Güçlü Sporcu' },
-    { at: 50,  name: '🏅 Şampiyon' },
-    { at: 100, name: '🦸 Süper Kahraman' },
-    { at: 200, name: '👑 Efsane' }
+    { at: 0,   name: 'Beyaz Kuşak',     color: '#ffffff' },
+    { at: 10,  name: 'Sarı Kuşak',      color: '#ffd23c' },
+    { at: 25,  name: 'Turuncu Kuşak',   color: '#ff8a3d' },
+    { at: 50,  name: 'Yeşil Kuşak',     color: '#2fc56d' },
+    { at: 80,  name: 'Mavi Kuşak',      color: '#2f7fe6' },
+    { at: 120, name: 'Kahverengi Kuşak', color: '#8a5a3c' },
+    { at: 180, name: 'Siyah Kuşak',     color: '#1c1c22' }
   ];
   var BADGES = [
     { emo: '🌟', txt: 'İlk yıldız',   ok: function (s) { return s.stars >= 1; } },
@@ -301,6 +320,14 @@
     badgesEl.appendChild(d);
   });
 
+  LEVELS.forEach(function (l) {
+    var b = document.createElement('i'); b.style.background = l.color; $('belts').appendChild(b);
+  });
+  function levelIndex() {
+    var li = 0;
+    for (var i = 0; i < LEVELS.length; i++) if (state.stars >= LEVELS[i].at) li = i;
+    return li;
+  }
   function doneCount() { var n = 0; for (var k in state.done) if (state.done[k]) n++; return n; }
 
   function render() {
@@ -310,15 +337,17 @@
     [].forEach.call(missionsEl.children, function (b) {
       b.setAttribute('aria-pressed', state.done[b.dataset.id] ? 'true' : 'false');
     });
-    var li = 0;
-    for (var i = 0; i < LEVELS.length; i++) if (state.stars >= LEVELS[i].at) li = i;
+    var li = levelIndex();
     var cur = LEVELS[li], next = LEVELS[li + 1];
     $('levelName').textContent = cur.name;
+    $('belt').style.setProperty('--c', cur.color);
+    $('levelBar').style.backgroundColor = (next || cur).color;
+    [].forEach.call($('belts').children, function (b, i) { b.classList.toggle('on', i <= li); });
     if (next) {
       $('levelNext').textContent = next.name + ' için ' + (next.at - state.stars) + ' yıldız kaldı';
       $('levelBar').style.width = Math.max(4, (state.stars - cur.at) / (next.at - cur.at) * 100) + '%';
     } else {
-      $('levelNext').textContent = 'En yüksek seviye!';
+      $('levelNext').textContent = 'En yüksek kuşak! Ustasın!';
       $('levelBar').style.width = '100%';
     }
     [].forEach.call(badgesEl.children, function (d, i) { d.classList.toggle('on', BADGES[i].ok(state)); });
@@ -333,7 +362,7 @@
   function badgeCount() { return BADGES.filter(function (b) { return b.ok(state); }).length; }
 
   function addStars(n, msg) {
-    var before = badgeCount();
+    var before = badgeCount(), beltBefore = levelIndex();
     state.stars = Math.max(0, state.stars + n);
     if (n > 0) {
       bump('statStars');
@@ -343,6 +372,7 @@
         msg = '🔥 ' + state.streak + ' gün üst üste! Harika!';
       }
       if (badgeCount() > before) { confetti(160); msg = '🏅 Yeni rozet kazandın!'; }
+      if (levelIndex() > beltBefore) { confetti(220); msg = '🥋 ' + LEVELS[levelIndex()].name + ' oldun! Tebrikler!'; }
       toast(msg || pick(PRAISE));
     }
     save(); render();
