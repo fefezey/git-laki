@@ -125,9 +125,6 @@
     background: #fff; color: var(--ink); font-weight: 800; font-size: 20px; line-height: 1;
     padding: 7px 16px; border-radius: 99px; border: 3px solid rgba(23,50,77,.22);
   }
-  .belts { display: flex; gap: 6px; margin-top: 12px; }
-  .belts i { flex: 1; height: 12px; border-radius: 99px; border: 2px solid rgba(23,50,77,.22); opacity: .3; }
-  .belts i.on { opacity: 1; }
   .bar { height: 22px; background: var(--line); border-radius: 99px; overflow: hidden; margin-top: 12px; }
   .bar i { display: block; height: 100%; width: 0; border-radius: 99px; background: var(--sun); box-shadow: inset 0 0 0 2px rgba(23,50,77,.18); transition: background-color .5s, width .5s cubic-bezier(.3,1.4,.5,1); }
 
@@ -161,17 +158,19 @@
       radial-gradient(2px 2px at 92% 44%, #fff 50%, transparent 51%), radial-gradient(3px 3px at 6% 52%, #fff3b0 50%, transparent 51%),
       linear-gradient(160deg, #1d2260, #0e0a19);
   }
+  .sleep, .food { overflow: hidden; }
+  .meal-pic { aspect-ratio: 5 / 4 !important; object-position: 50% 40% !important; }
+  .food h2 { margin-bottom: 14px; }
+  .sleep-pic, .meal-pic {
+    display: block; width: calc(100% + 36px); margin: -18px -18px 4px; aspect-ratio: 16 / 10; object-fit: cover; object-position: 50% 38%;
+    -webkit-mask-image: linear-gradient(to bottom, #000 68%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 68%, transparent 100%);
+  }
   .sleep h2 { margin-bottom: 14px; }
-  .clock { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; text-align: center; margin-bottom: 14px; }
+  .clock { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; text-align: center; margin-bottom: 4px; }
   .clock small { display: block; font-size: 16px; font-weight: 700; color: #b9c2ff; }
   .clock b { display: block; font-size: clamp(38px, 11vw, 56px); font-weight: 800; line-height: 1; color: var(--sun); }
-  .clock .zz { font-weight: 800; font-size: 17px; line-height: 1.1; padding: 10px 14px; border-radius: 99px; background: rgba(255,255,255,.12); }
-  .boost { background: rgba(255,255,255,.10); border: 3px solid rgba(255,211,60,.55); border-radius: 20px; padding: 14px 16px; text-align: center; }
-  .boost b { display: block; font-size: 22px; font-weight: 800; color: var(--sun); }
-  .boost p { margin: 6px 0 0; font-size: 19px; font-weight: 500; }
-  .boost strong { color: #fff3b0; font-weight: 800; }
-  .boost em { font-style: normal; font-weight: 800; }
-
+  .clock .zz { font-size: 28px; color: #b9c2ff; }
   /* Yemek düzeni: dokunulan tabaklar */
   .meals { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .meal {
@@ -188,7 +187,6 @@
   }
   .meal b { font-size: 21px; font-weight: 800; }
   .meal .foods { font-size: 24px; letter-spacing: 2px; }
-  .meal small { font-size: 15px; font-weight: 500; color: var(--ink-soft); }
   .meal .yum {
     position: absolute; top: -8px; right: -6px; background: var(--green); color: #fff; font-weight: 800; font-size: 15px;
     padding: 4px 12px; border-radius: 99px; box-shadow: 0 4px 0 var(--green-deep);
@@ -264,7 +262,6 @@
     <h2>🥋 Kuşağın</h2>
     <div class="belt" id="belt"><span id="levelName">Beyaz Kuşak</span></div>
     <div class="bar"><i id="levelBar"></i></div>
-    <div class="belts" id="belts" aria-hidden="true"></div>
   </section>
 
   <section class="card reveal">
@@ -273,22 +270,18 @@
   </section>
 
   <section class="card sleep reveal">
+    <img class="sleep-pic" src="omer-uyku.jpg" alt="Mışıl mışıl uyuyan Ömer" loading="lazy">
     <h2>Uyku Düzenin 🌙</h2>
     <div class="clock">
       <div><small>En geç yatış</small><b>22:00</b></div>
-      <div class="zz">9 saat<br>uyku</div>
+      <div class="zz" aria-hidden="true">➜</div>
       <div><small>Kalkış</small><b>07:00</b></div>
-    </div>
-    <div class="boost">
-      <b>⚡ Hızlı kuşak sırrı</b>
-      <p>Erken uyursan <strong>1 değil 3 yıldız</strong> kazanırsın!</p>
-      <p>Sabah kalkınca <em>“Dün gece erken uyudum”</em> kutusuna dokun. Kuşağın daha çabuk gelir.</p>
     </div>
   </section>
 
-  <section class="card reveal">
+  <section class="card food reveal">
+    <img class="meal-pic" src="omer-yemek.jpg" alt="Sağlıklı yemeğini yiyen Ömer" loading="lazy">
     <h2>🍽️ Yemek Düzenin</h2>
-    <p class="sub">Yediğin öğüne dokun!</p>
     <div class="meals" id="meals"></div>
   </section>
 
@@ -307,8 +300,6 @@
 (function () {
   var MISSIONS = [
     { bg: '#dff1ff', id: 'su',     emo: '💧', txt: 'Bol bol su içtim' },
-    { bg: '#ffe4e4', id: 'meyve',  emo: '🍎', txt: 'Meyve yedim' },
-    { bg: '#e1f6df', id: 'sebze',  emo: '🥦', txt: 'Sebze yedim' },
     { bg: '#fff0d6', id: 'spor',   emo: '🥋', txt: 'Karate ya da spor yaptım' },
     { bg: '#ece5ff', id: 'odev',   emo: '📚', txt: 'Ödevimi yaptım' },
     { bg: '#dff5f3', id: 'ekran',  emo: '📱', txt: 'Ekran süreme uydum' },
@@ -347,6 +338,8 @@
     var saved = JSON.parse(localStorage.getItem(KEY));
     if (saved && typeof saved === 'object') for (var k in state) if (k in saved) state[k] = saved[k];
   } catch (e) {}
+  var KNOWN = {}; MISSIONS.concat(MEALS).forEach(function (m) { KNOWN[m.id] = 1; });
+  for (var d in state.done) if (!KNOWN[d]) delete state.done[d];
   if (!state.hist || typeof state.hist !== 'object') state.hist = {};
   function countDone(d) { var n = 0; for (var k in d) if (d[k]) n++; return n; }
   if (!state.since) state.since = state.date || today;
@@ -373,14 +366,11 @@
     var b = document.createElement('button');
     b.className = 'meal'; b.style.setProperty('--bg', m.bg); b.dataset.id = m.id;
     b.innerHTML = '<span class="plate">' + m.emo + '</span><b>' + m.name + '</b><span class="foods">' + m.foods +
-      '</span><small>' + m.txt + '</small><span class="yum">😋 Yedim!</span>';
+      '</span><span class="yum">😋 Yedim!</span>';
     b.addEventListener('click', function () { toggle(m); });
     mealsEl.appendChild(b);
   });
   var TOTAL = MISSIONS.length + MEALS.length;
-  LEVELS.forEach(function (l) {
-    var b = document.createElement('i'); b.style.background = l.color; $('belts').appendChild(b);
-  });
   function levelIndex() {
     var li = 0;
     for (var i = 0; i < LEVELS.length; i++) if (state.stars >= LEVELS[i].at) li = i;
@@ -428,7 +418,6 @@
     $('levelName').textContent = cur.name;
     $('belt').style.setProperty('--c', cur.color);
     $('levelBar').style.backgroundColor = (next || cur).color;
-    [].forEach.call($('belts').children, function (b, i) { b.classList.toggle('on', i <= li); });
     if (next) {
       $('levelBar').style.width = Math.max(4, (state.stars - cur.at) / (next.at - cur.at) * 100) + '%';
     } else {
