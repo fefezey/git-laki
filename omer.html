@@ -100,7 +100,7 @@
   .js .stats.reveal { transform: none; }
 
   /* Sayaçlar */
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
   .stat { background: var(--card); border-radius: 22px; padding: 12px 6px 10px; text-align: center; box-shadow: 0 6px 0 rgba(23,50,77,.10); }
   .stat .num { font-size: 34px; font-weight: 800; line-height: 1; }
   .stat .lbl { font-size: 15px; color: var(--ink-soft); font-weight: 700; margin-top: 2px; }
@@ -135,13 +135,17 @@
   .missions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .mission {
     display: flex; align-items: center; gap: 10px; text-align: left;
-    background: #f3f9ff; border: 3px solid var(--line); border-radius: 20px;
+    background: var(--bg, #f3f9ff); border: 3px solid rgba(23,50,77,.08); border-radius: 22px;
     padding: 12px; min-height: 76px; font-weight: 700; font-size: 18px; line-height: 1.15;
     transition: transform .12s, background .2s, border-color .2s;
   }
   .mission:active { transform: scale(.96); }
-  .mission .emo { font-size: 36px; flex: none; }
+  .mission .emo {
+    flex: none; width: 54px; height: 54px; border-radius: 50%; background: #fff; display: grid; place-items: center;
+    font-size: 30px; box-shadow: 0 4px 0 rgba(23,50,77,.10);
+  }
   .mission .txt { flex: 1; }
+  .x3 { display: block; width: max-content; margin-top: 4px; padding: 2px 10px; border-radius: 99px; background: #fff1c2; color: #8a5a00; font-size: 15px; font-weight: 800; }
   .mission .tick {
     flex: none; width: 34px; height: 34px; border-radius: 50%; border: 3px solid #c5d9ea; background: #fff;
     display: grid; place-items: center; color: transparent; font-size: 20px; font-weight: 800;
@@ -149,30 +153,51 @@
   .mission[aria-pressed="true"] { background: #e3f9ec; border-color: var(--green); }
   .mission[aria-pressed="true"] .tick { background: var(--green); border-color: var(--green-deep); color: #fff; animation: pop .4s; }
   /* Uyku düzeni */
-  .sleep { background: linear-gradient(160deg, #1d2260, #0e0a19); color: #fff; }
+  .sleep {
+    color: #fff;
+    background:
+      radial-gradient(2px 2px at 12% 18%, #fff 50%, transparent 51%), radial-gradient(2px 2px at 82% 12%, #fff 50%, transparent 51%),
+      radial-gradient(3px 3px at 68% 30%, #fff3b0 50%, transparent 51%), radial-gradient(2px 2px at 30% 9%, #fff 50%, transparent 51%),
+      radial-gradient(2px 2px at 92% 44%, #fff 50%, transparent 51%), radial-gradient(3px 3px at 6% 52%, #fff3b0 50%, transparent 51%),
+      linear-gradient(160deg, #1d2260, #0e0a19);
+  }
   .sleep h2 { margin-bottom: 14px; }
   .clock { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; text-align: center; margin-bottom: 14px; }
   .clock small { display: block; font-size: 16px; font-weight: 700; color: #b9c2ff; }
   .clock b { display: block; font-size: clamp(38px, 11vw, 56px); font-weight: 800; line-height: 1; color: var(--sun); }
   .clock .zz { font-weight: 800; font-size: 17px; line-height: 1.1; padding: 10px 14px; border-radius: 99px; background: rgba(255,255,255,.12); }
-  .steps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .step {
-    display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.10);
-    border: 3px solid rgba(255,255,255,.14); border-radius: 20px; padding: 10px 12px; font-weight: 500; line-height: 1.2;
-  }
-  .step .emo { font-size: 32px; flex: none; }
-  .step b { display: block; font-weight: 800; font-size: 20px; color: #fff3b0; }
-  .why { margin: 14px 0 0; text-align: center; font-weight: 700; color: #d7dcff; }
+  .boost { background: rgba(255,255,255,.10); border: 3px solid rgba(255,211,60,.55); border-radius: 20px; padding: 14px 16px; text-align: center; }
+  .boost b { display: block; font-size: 22px; font-weight: 800; color: var(--sun); }
+  .boost p { margin: 6px 0 0; font-size: 19px; font-weight: 500; }
+  .boost strong { color: #fff3b0; font-weight: 800; }
+  .boost em { font-style: normal; font-weight: 800; }
 
-  /* Yemek düzeni */
-  .card h2:has(+ .meals) { margin-bottom: 14px; }
-  .meals { display: grid; gap: 10px; }
+  /* Yemek düzeni: dokunulan tabaklar */
+  .meals { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .meal {
-    display: flex; align-items: center; gap: 12px; background: #fff8e6; border: 3px solid #ffe7a8;
-    border-radius: 20px; padding: 10px 14px; font-weight: 500; line-height: 1.2;
+    position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px;
+    background: var(--bg, #fff8e6); border: 3px solid rgba(23,50,77,.08); border-radius: 26px;
+    padding: 16px 10px 14px; line-height: 1.15; transition: transform .12s, background .25s, border-color .25s;
   }
-  .meal .emo { font-size: 34px; flex: none; }
-  .meal b { display: block; font-weight: 800; font-size: 20px; }
+  .meal:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .meal:active { transform: scale(.96); }
+  .meal .plate {
+    width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; font-size: 48px;
+    background: #fff; box-shadow: inset 0 0 0 7px #fff, inset 0 0 0 10px rgba(23,50,77,.10), 0 6px 0 rgba(23,50,77,.10);
+    margin-bottom: 6px;
+  }
+  .meal b { font-size: 21px; font-weight: 800; }
+  .meal .foods { font-size: 24px; letter-spacing: 2px; }
+  .meal small { font-size: 15px; font-weight: 500; color: var(--ink-soft); }
+  .meal .yum {
+    position: absolute; top: -8px; right: -6px; background: var(--green); color: #fff; font-weight: 800; font-size: 15px;
+    padding: 4px 12px; border-radius: 99px; box-shadow: 0 4px 0 var(--green-deep);
+    transform: scale(0) rotate(-20deg); transition: transform .35s cubic-bezier(.3,1.8,.5,1);
+  }
+  .meal[aria-pressed="true"] { background: #e3f9ec; border-color: var(--green); }
+  .meal[aria-pressed="true"] .yum { transform: scale(1) rotate(8deg); }
+  .meal[aria-pressed="true"] .plate { animation: yum .6s; }
+  @keyframes yum { 30% { transform: rotate(-12deg) scale(1.12); } 60% { transform: rotate(10deg) scale(1.08); } }
 
   /* Haftalık takvim */
   .card h2:has(+ .week) { margin-bottom: 12px; }
@@ -189,16 +214,6 @@
   .day.today .box { border-color: var(--sky-deep); box-shadow: 0 0 0 3px rgba(28,127,224,.2); }
   .day.today.ok .box { border-color: var(--green-deep); box-shadow: 0 0 0 3px rgba(47,197,109,.25); }
 
-  /* Rozetler */
-  .badges { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-  .badge { text-align: center; font-size: 14px; font-weight: 700; color: var(--ink-soft); line-height: 1.15; }
-  .badge .medal {
-    width: 68px; height: 68px; margin: 0 auto 6px; border-radius: 50%; display: grid; place-items: center;
-    font-size: 34px; background: var(--line); filter: grayscale(1); opacity: .45;
-  }
-  .badge.on { color: var(--ink); }
-  .badge.on .medal { background: #fff1c2; box-shadow: 0 0 0 4px var(--sun); filter: none; opacity: 1; }
-
   .note { background: linear-gradient(135deg, #fff, #fff4f8); border: 3px dashed var(--pink); }
   .note p { margin: 12px 0 0; font-size: 20px; font-weight: 500; }
   .note .sign { text-align: right; font-weight: 800; color: var(--pink); margin-top: 10px; }
@@ -213,7 +228,7 @@
   .toast.show { transform: translate(-50%, 0); }
 
   @media (max-width: 520px) {
-    .missions, .steps { grid-template-columns: 1fr; }
+    .missions { grid-template-columns: 1fr; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before { animation: none !important; transition: none !important; }
@@ -236,8 +251,25 @@
   <p class="motto reveal" id="motto">Pes etmek yok,<br><span>son nefese kadar savaş!</span></p>
 
   <section class="card reveal" id="sorumluluklar">
-    <h2>Bugünkü Sorumlulukların</h2>
+    <h2>✅ Bugünkü Sorumlulukların</h2>
     <div class="missions" id="missions"></div>
+  </section>
+
+  <section class="stats reveal" aria-label="Puanların">
+    <div class="stat" id="statStars"><div class="num">⭐ <span id="stars">0</span></div><div class="lbl">Yıldız</div></div>
+    <div class="stat" id="statStreak"><div class="num">🔥 <span id="streak">0</span></div><div class="lbl">Gün üst üste</div></div>
+  </section>
+
+  <section class="card reveal">
+    <h2>🥋 Kuşağın</h2>
+    <div class="belt" id="belt"><span id="levelName">Beyaz Kuşak</span></div>
+    <div class="bar"><i id="levelBar"></i></div>
+    <div class="belts" id="belts" aria-hidden="true"></div>
+  </section>
+
+  <section class="card reveal">
+    <h2>📅 Bu Haftan</h2>
+    <div class="week" id="week"></div>
   </section>
 
   <section class="card sleep reveal">
@@ -247,48 +279,17 @@
       <div class="zz">9 saat<br>uyku</div>
       <div><small>Kalkış</small><b>07:00</b></div>
     </div>
-    <div class="steps">
-      <div class="step"><span class="emo">📵</span><div><b>21:00</b>Ekranlar kapanır</div></div>
-      <div class="step"><span class="emo">🪥</span><div><b>21:30</b>Dişler fırçalanır, pijama giyilir</div></div>
-      <div class="step"><span class="emo">📖</span><div><b>21:45</b>Yatakta biraz kitap</div></div>
-      <div class="step"><span class="emo">😴</span><div><b>En geç 22:00</b>Işıklar söner</div></div>
-    </div>
-    <p class="why">Kasların ve beynin sen uyurken güçlenir. İyi uyuyan karateci daha hızlı olur!</p>
-  </section>
-
-  <section class="card reveal">
-    <h2>Yemek Düzenin</h2>
-    <div class="meals">
-      <div class="meal"><span class="emo">🌅</span><div><b>Kahvaltı</b>Yumurta, peynir, domates, salatalık ve tam buğday ekmeği</div></div>
-      <div class="meal"><span class="emo">🍎</span><div><b>Ara öğün</b>Bir meyve ve bir avuç ceviz ya da fındık</div></div>
-      <div class="meal"><span class="emo">🍽️</span><div><b>Öğle yemeği</b>Et, tavuk ya da kuru fasulye gibi bir ana yemek; yanında sebze ve yoğurt</div></div>
-      <div class="meal"><span class="emo">🥛</span><div><b>Ara öğün</b>Süt ya da ayran, yanında bir meyve</div></div>
-      <div class="meal"><span class="emo">🌙</span><div><b>Akşam yemeği</b>Çorba, sebze yemeği ve salata</div></div>
+    <div class="boost">
+      <b>⚡ Hızlı kuşak sırrı</b>
+      <p>Erken uyursan <strong>1 değil 3 yıldız</strong> kazanırsın!</p>
+      <p>Sabah kalkınca <em>“Dün gece erken uyudum”</em> kutusuna dokun. Kuşağın daha çabuk gelir.</p>
     </div>
   </section>
 
-  <section class="stats reveal" aria-label="Puanların">
-    <div class="stat" id="statStars"><div class="num">⭐ <span id="stars">0</span></div><div class="lbl">Yıldız</div></div>
-    <div class="stat" id="statStreak"><div class="num">🔥 <span id="streak">0</span></div><div class="lbl">Gün üst üste</div></div>
-    <div class="stat"><div class="num">🏆 <span id="best">0</span></div><div class="lbl">Rekor seri</div></div>
-  </section>
-
   <section class="card reveal">
-    <h2>Bu Haftan</h2>
-    <div class="week" id="week"></div>
-  </section>
-
-  <section class="card reveal">
-    <h2>Kuşağın</h2>
-    <div class="belt" id="belt"><span id="levelName">Beyaz Kuşak</span></div>
-    <div class="bar"><i id="levelBar"></i></div>
-    <div class="belts" id="belts" aria-hidden="true"></div>
-  </section>
-
-  <section class="card reveal">
-    <h2>Rozetlerin</h2>
-    <p class="sub">Yıldız topladıkça rozetler açılır.</p>
-    <div class="badges" id="badges"></div>
+    <h2>🍽️ Yemek Düzenin</h2>
+    <p class="sub">Yediğin öğüne dokun!</p>
+    <div class="meals" id="meals"></div>
   </section>
 
   <section class="card note reveal">
@@ -305,33 +306,30 @@
 <script>
 (function () {
   var MISSIONS = [
-    { id: 'su',     emo: '💧', txt: 'Bol bol su içtim' },
-    { id: 'meyve',  emo: '🍎', txt: 'Meyve yedim' },
-    { id: 'sebze',  emo: '🥦', txt: 'Sebze yedim' },
-    { id: 'spor',   emo: '🥋', txt: 'Karate ya da spor yaptım' },
-    { id: 'odev',   emo: '📚', txt: 'Ödevimi yaptım' },
-    { id: 'ekran',  emo: '📱', txt: 'Ekran süreme uydum' },
-    { id: 'disari', emo: '🌳', txt: 'Dışarıda vakit geçirdim' },
-    { id: 'uyku',   emo: '😴', txt: 'Saatinde yattım' }
+    { bg: '#dff1ff', id: 'su',     emo: '💧', txt: 'Bol bol su içtim' },
+    { bg: '#ffe4e4', id: 'meyve',  emo: '🍎', txt: 'Meyve yedim' },
+    { bg: '#e1f6df', id: 'sebze',  emo: '🥦', txt: 'Sebze yedim' },
+    { bg: '#fff0d6', id: 'spor',   emo: '🥋', txt: 'Karate ya da spor yaptım' },
+    { bg: '#ece5ff', id: 'odev',   emo: '📚', txt: 'Ödevimi yaptım' },
+    { bg: '#dff5f3', id: 'ekran',  emo: '📱', txt: 'Ekran süreme uydum' },
+    { bg: '#eaf6d8', id: 'disari', emo: '🌳', txt: 'Dışarıda vakit geçirdim' },
+    { bg: '#e4e7ff', id: 'uyku',   emo: '😴', txt: 'Dün gece erken uyudum', stars: 3 }
+  ];
+  var MEALS = [
+    { id: 'y-kahvalti', bg: '#fff3d1', emo: '🍳', name: 'Kahvaltı',     foods: '🧀 🍅 🥒 🍞', txt: 'Yumurta, peynir, domates, salatalık, ekmek' },
+    { id: 'y-ara1',     bg: '#ffe4e4', emo: '🍎', name: 'Ara öğün',     foods: '🍌 🥜',       txt: 'Meyve ve bir avuç kuruyemiş' },
+    { id: 'y-ogle',     bg: '#e1f6df', emo: '🍗', name: 'Öğle yemeği',  foods: '🥦 🥕 🥣',    txt: 'Ana yemek, sebze ve yoğurt' },
+    { id: 'y-ara2',     bg: '#dff1ff', emo: '🥛', name: 'Ara öğün',     foods: '🍓 🍊',       txt: 'Süt ya da ayran, yanında meyve' },
+    { id: 'y-aksam',    bg: '#ece5ff', emo: '🍲', name: 'Akşam yemeği', foods: '🥗 🥔',       txt: 'Çorba, sebze yemeği ve salata' }
   ];
   var LEVELS = [
     { at: 0,   name: 'Beyaz Kuşak',     color: '#ffffff' },
-    { at: 10,  name: 'Sarı Kuşak',      color: '#ffd23c' },
-    { at: 25,  name: 'Turuncu Kuşak',   color: '#ff8a3d' },
-    { at: 50,  name: 'Yeşil Kuşak',     color: '#2fc56d' },
-    { at: 80,  name: 'Mavi Kuşak',      color: '#2f7fe6' },
-    { at: 120, name: 'Kahverengi Kuşak', color: '#8a5a3c' },
-    { at: 180, name: 'Siyah Kuşak',     color: '#1c1c22' }
-  ];
-  var BADGES = [
-    { emo: '🌟', txt: 'İlk yıldız',   ok: function (s) { return s.stars >= 1; } },
-    { emo: '🎯', txt: '10 yıldız',    ok: function (s) { return s.stars >= 10; } },
-    { emo: '🚀', txt: '25 yıldız',    ok: function (s) { return s.stars >= 25; } },
-    { emo: '🏅', txt: '50 yıldız',    ok: function (s) { return s.stars >= 50; } },
-    { emo: '🔥', txt: '3 gün seri',   ok: function (s) { return s.best >= 3; } },
-    { emo: '⚡', txt: '7 gün seri',   ok: function (s) { return s.best >= 7; } },
-    { emo: '🦸', txt: '100 yıldız',   ok: function (s) { return s.stars >= 100; } },
-    { emo: '👑', txt: '30 gün seri',  ok: function (s) { return s.best >= 30; } }
+    { at: 20,  name: 'Sarı Kuşak',      color: '#ffd23c' },
+    { at: 50,  name: 'Turuncu Kuşak',   color: '#ff8a3d' },
+    { at: 90,  name: 'Yeşil Kuşak',     color: '#2fc56d' },
+    { at: 140, name: 'Mavi Kuşak',      color: '#2f7fe6' },
+    { at: 200, name: 'Kahverengi Kuşak', color: '#8a5a3c' },
+    { at: 270, name: 'Siyah Kuşak',     color: '#1c1c22' }
   ];
   var PRAISE = ['Harikasın!', 'Süpersin Ömer!', 'Aferin sana!', 'İşte bu!', 'Bravo şampiyon!', 'Çok iyi gidiyorsun!'];
   var DAILY_GOAL = 3, KEY = 'super-omer-v1';
@@ -363,20 +361,23 @@
   var missionsEl = $('missions');
   MISSIONS.forEach(function (m) {
     var b = document.createElement('button');
-    b.className = 'mission';
-    b.innerHTML = '<span class="emo">' + m.emo + '</span><span class="txt">' + m.txt + '</span><span class="tick">✓</span>';
-    b.addEventListener('click', function () { toggle(m.id); });
+    b.className = 'mission'; b.style.setProperty('--bg', m.bg);
+    b.innerHTML = '<span class="emo">' + m.emo + '</span><span class="txt">' + m.txt + (m.stars ? '<span class="x3">⭐ ×' + m.stars + '</span>' : '') + '</span><span class="tick">✓</span>';
+    b.addEventListener('click', function () { toggle(m); });
     b.dataset.id = m.id;
     missionsEl.appendChild(b);
   });
-  var badgesEl = $('badges');
-  BADGES.forEach(function (b) {
-    var d = document.createElement('div');
-    d.className = 'badge';
-    d.innerHTML = '<div class="medal">' + b.emo + '</div>' + b.txt;
-    badgesEl.appendChild(d);
-  });
 
+  var mealsEl = $('meals');
+  MEALS.forEach(function (m) {
+    var b = document.createElement('button');
+    b.className = 'meal'; b.style.setProperty('--bg', m.bg); b.dataset.id = m.id;
+    b.innerHTML = '<span class="plate">' + m.emo + '</span><b>' + m.name + '</b><span class="foods">' + m.foods +
+      '</span><small>' + m.txt + '</small><span class="yum">😋 Yedim!</span>';
+    b.addEventListener('click', function () { toggle(m); });
+    mealsEl.appendChild(b);
+  });
+  var TOTAL = MISSIONS.length + MEALS.length;
   LEVELS.forEach(function (l) {
     var b = document.createElement('i'); b.style.background = l.color; $('belts').appendChild(b);
   });
@@ -417,8 +418,7 @@
   function render() {
     $('stars').textContent = state.stars;
     $('streak').textContent = state.streak;
-    $('best').textContent = state.best;
-    [].forEach.call(missionsEl.children, function (b) {
+    [].forEach.call(document.querySelectorAll('.mission, .meal'), function (b) {
       b.setAttribute('aria-pressed', state.done[b.dataset.id] ? 'true' : 'false');
     });
     state.hist[today] = doneCount();
@@ -434,7 +434,6 @@
     } else {
       $('levelBar').style.width = '100%';
     }
-    [].forEach.call(badgesEl.children, function (d, i) { d.classList.toggle('on', BADGES[i].ok(state)); });
   }
 
   function bump(id) { var el = $(id); el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
@@ -443,10 +442,9 @@
     var t = $('toast'); t.textContent = msg; t.classList.add('show');
     clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2200);
   }
-  function badgeCount() { return BADGES.filter(function (b) { return b.ok(state); }).length; }
 
   function addStars(n, msg) {
-    var before = badgeCount(), beltBefore = levelIndex();
+    var beltBefore = levelIndex();
     state.stars = Math.max(0, state.stars + n);
     if (n > 0) {
       bump('statStars');
@@ -455,18 +453,18 @@
         bump('statStreak'); confetti(120);
         msg = '🔥 ' + state.streak + ' gün üst üste! Harika!';
       }
-      if (badgeCount() > before) { confetti(160); msg = '🏅 Yeni rozet kazandın!'; }
       if (levelIndex() > beltBefore) { confetti(220); msg = '🥋 ' + LEVELS[levelIndex()].name + ' oldun! Tebrikler!'; }
       toast(msg || pick(PRAISE));
     }
     render(); save();
   }
 
-  function toggle(id) {
-    if (state.done[id]) { state.done[id] = false; addStars(-1); return; }
-    state.done[id] = true;
-    confetti(doneCount() === MISSIONS.length ? 200 : 30);
-    addStars(1, '⭐ +1 yıldız! ' + pick(PRAISE));
+  function toggle(m) {
+    var n = m.stars || 1;
+    if (state.done[m.id]) { state.done[m.id] = false; addStars(-n); return; }
+    state.done[m.id] = true;
+    confetti(doneCount() === TOTAL ? 220 : (n > 1 ? 120 : 30));
+    addStars(n, n > 1 ? '⚡ +' + n + ' yıldız! Erken uyudun!' : m.foods ? '😋 Afiyet olsun! +1 yıldız' : '⭐ +1 yıldız! ' + pick(PRAISE));
   }
 
   /* ---- Konfeti ---- */
